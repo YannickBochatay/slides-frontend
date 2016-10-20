@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title>Développement front</title>
+
+  <!-- Required stylesheet -->
+  <link rel="stylesheet" media="screen" href="vendor/deck/core/deck.core.css">
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+  <link rel="stylesheet" media="screen" href="vendor/deck/extensions/goto/deck.goto.css">
+  <link rel="stylesheet" media="screen" href="vendor/deck/extensions/menu/deck.menu.css">
+  <link rel="stylesheet" media="screen" href="vendor/deck/extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" media="screen" href="vendor/deck/extensions/status/deck.status.css">
+  <link rel="stylesheet" media="screen" href="vendor/deck/extensions/scale/deck.scale.css">
+
+  <!-- Style theme. More available in /themes/style/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="vendor/deck/themes/style/neon.css">
+
+  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="vendor/deck/themes/transition/horizontal-slide.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="vendor/deck/core/print.css">
+
+  <link rel="stylesheet" media="screen" href="vendor/highlightjs/styles/agate.css">
+
+  <!-- Required Modernizr file -->
+  <script src="vendor/modernizr.custom.js"></script>
+</head>
+<body>
+  <div class="deck-container">
+
+    <!-- Begin slides. Just make elements with a class of slide. -->
+
+    <section class="slide">
+      <h1>Développement front</h1>
+    </section>
+
+    <!--<section class="slide">
+      <h2>Webpack</h2>
+      <img src="img/what-is-webpack.png" alt="what is webpack" style="background-color:#ccc"/>
+    </section>
+    -->
+
+    <section class="slide">
+      <h2>Webpack</h2>
+      <p>Webpack est un empaqueteur de modules (module bundler).</p>
+      <ul>
+        <li>
+          Il analyse les dépendances de l'application :
+          <code>js</code> mais aussi <code>css</code>, les <code>images</code>, etc.
+        </li>
+        <li>
+          Il comprend les différents standards de définition et d'exportation de modules : <code>AMD</code>, <code>CommonJS</code>, <code>ES6 modules</code>, etc.
+        </li>
+      </ul>
+      <br/>
+      <p>Basé sur 3 concepts importants :</p>
+      <ul>
+        <li>
+          <u>entry point</u> : premier code javascript exécuté. Toutes les dépendances seront analysées à partir de ce point.
+        </li>
+        <li>
+          <u>loaders</u> : chaque module est chargé par un lodaer qui va effectuer des transformations sur ce module.
+        </li>
+        <li>
+          <u>plugins</u> : ils s'ajoutent au processus de construction pour faire toutes sortes de chose (minification, optimisation, etc)
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Babel</h2>
+      <p>Transpile le javascript écrit en <code>Ecmascript 6</code> (et même du 7 si besoin) en <code>Ecmascript 5</code>.</p>
+      <p>Prend en charge également la transpilation du <code>JSX</code> (langage développé pour <code>React</code>) en javascript.</p>
+    </section>
+
+    <section class="slide">
+      <h2>Exemple</h2>
+      <code>monScript.js</code><br/>
+      <pre><code class="javascript">import React from "react"
+import classNames from "./style.css"
+import src from "images/foo.png"
+
+export default props => (
+  &lt;img src={ src } className={ classNames.image } {...props}/&gt;
+)</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3>classes</h3>
+      <pre><code class="javascript">import React from "react"
+
+class MyComponent extends React.Component {
+
+  constructor(props) {
+
+    super(props)
+
+    this.state = {}
+  }
+
+  render() {
+    return &lt;div&gt;Hello world&lt;/div&gt;
+  }
+}</code></pre>
+      </li>
+    </section>
+
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3>imports et exports nommés</h3>
+      <pre><code class="javascript">import React, { Component } from "react"
+import { connect } from "react-redux"
+
+export class MyComponent extends Component {
+
+  constructor(props) {
+
+    super(props)
+
+    this.state = {}
+  }
+
+  render() {
+    return &lt;div&gt;Hello world&lt;/div&gt;
+  }
+}
+
+export default connect()(MyComponent)</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3>Portée de bloc</h3>
+      <p>Le mot clé <code>var</code> est interdit dans notre config eslint. On utilisera toujours <code>const</code> en priorité, et <code>let</code> si on a besoin de réaffecter la variable.</p>
+      <pre><code class="javascript">const tab = []
+tab.push("hello")
+tab = {} //error
+
+let tab2 = []
+tab.push("coucou")
+tab = {} //ok</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3>Fonctions fléchées</h3>
+      <p>Raccourci pour les fonctions anonymes. Les fonctions fléchées capturent la valeur de <code>this</code> dans leur contexte.</p>
+      <pre><code class="javascript">class Personne {
+
+  constructor() {
+
+    this.age = 0;
+
+    setInterval(() => this.vieillir(), 1000);
+
+  }
+
+  vieillir() {
+    this.age++
+  }
+}
+
+var p = new Personne();</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3>Affecter par décomposition</h3>
+      <pre><code class="javascript">const { className, onClick } = props
+
+className === props.className //true
+onClick === props.onClick //true</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Emprunt à ES7</h2>
+      <h3>Opérateur de décomposition des objets</h3>
+      <p>Très utile pour React</p>
+      <pre><code class="javascript">
+const defaultProps = { tata : "tata", toto : "toto" }
+const objExtended = { ...defaultProps, tutu : "tutu" }
+
+//JSX
+const (props) => &lt;div className="toto" {...props}/&gt;</code></pre>
+    </section>
+<!--
+    <section class="slide">
+      <h2>Fonctionnalités ES6 importantes</h2>
+      <h3></h3>
+      <p></p>
+      <pre><code class="javascript"></code></pre>
+    </section>
+-->
+
+    <!-- End slides. -->
+
+    <!-- Begin extension snippets. Add or remove as needed. -->
+
+    <!-- deck.navigation snippet -->
+    <div aria-role="navigation">
+      <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+      <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+    </div>
+
+    <!-- deck.status snippet -->
+    <p class="deck-status" aria-role="status">
+      <span class="deck-status-current"></span>
+      /
+      <span class="deck-status-total"></span>
+    </p>
+
+    <!-- deck.goto snippet -->
+    <form action="." method="get" class="goto-form">
+      <label for="goto-slide">Go to slide:</label>
+      <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+      <datalist id="goto-datalist"></datalist>
+      <input type="submit" value="Go">
+    </form>
+
+    <!-- End extension snippets. -->
+  </div>
+
+<!-- Required JS files. -->
+<script src="vendor/jquery.min.js"></script>
+<script src="vendor/deck/core/deck.core.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="vendor/deck/extensions/menu/deck.menu.js"></script>
+<script src="vendor/deck/extensions/goto/deck.goto.js"></script>
+<script src="vendor/deck/extensions/status/deck.status.js"></script>
+<script src="vendor/deck/extensions/navigation/deck.navigation.js"></script>
+<script src="vendor/deck/extensions/scale/deck.scale.js"></script>
+
+<script src="vendor/highlightjs/highlight.pack.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+  $(function() {
+    $.deck('.slide');
+  });
+  hljs.initHighlightingOnLoad();
+</script>
+</body>
+</html>
