@@ -57,6 +57,9 @@
         <li>
           Il comprend les différents standards de définition et d'exportation de modules : <code>AMD</code>, <code>CommonJS</code>, <code>ES6 modules</code>, etc.
         </li>
+        <li>
+          Il fonctionne parfaitement avec les paquets <code>NPM</code>.
+        </li>
       </ul>
       <br/>
       <p>Basé sur 3 concepts importants :</p>
@@ -65,10 +68,10 @@
           <u>entry point</u> : premier code javascript exécuté. Toutes les dépendances seront analysées à partir de ce point.
         </li>
         <li>
-          <u>loaders</u> : chaque module est chargé par un lodaer qui va effectuer des transformations sur ce module.
+          <u>loaders</u> : chaque module est chargé par un loader qui va effectuer des transformations sur ce module.
         </li>
         <li>
-          <u>plugins</u> : ils s'ajoutent au processus de construction pour faire toutes sortes de chose (minification, optimisation, etc)
+          <u>plugins</u> : ils s'ajoutent au processus de construction pour faire toutes sortes de choses (minification, optimisation, fractionnement de code, etc)
         </li>
       </ul>
     </section>
@@ -190,6 +193,363 @@ const objExtended = { ...defaultProps, tutu : "tutu" }
 //JSX
 const (props) => &lt;div className="toto" {...props}/&gt;</code></pre>
     </section>
+
+    <section class="slide">
+      <h2>React</h2>
+      <h3>JSX</h3>
+      <p>Clarifie l'écriture du rendu du composant.</p>
+      <h4>Avec</h4>
+      <pre><code class="javascript">const Component = props => (
+  &lt;div onClick={ props.onClick } className={ props.className }&gt;
+    Hello, &lt;span&gt;{ props.name }&lt;/span&gt;
+  &lt;/div&gt;
+)</code></pre>
+    <h4>Sans</h4>
+      <pre><code class="javascript">const Component = props => (
+  React.createElement("div",{
+    onClick : props.onClick ,
+    className : props.className
+  },[
+    "Hello ,",
+    React.createElement("span",null,props.name)
+  ])</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React</h2>
+      <h3>Propriétés</h3>
+      <p>Un composant peut modifier les propriétés de ses enfants, mais pas les siennes.</p>
+      <pre><code class="javascript">class Counter extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  increment() {
+    this.props.counter++
+    // Erreur, un composant ne peut pas modifier ses propriétés !
+  }
+
+  handleClick() {
+    this.increment()
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        Counter : { this.props.counter }
+        &lt;button&gt;increment&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React</h2>
+      <h3>Etat interne</h3>
+      <p>En revanche, lui seul peut modifier son état interne</p>
+      <pre><code class="javascript">class Counter extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+    this.state = { counter : 0 }
+  }
+
+  increment() {
+    this.setState({ counter : this.state.counter + 1 })
+  }
+
+  handleClick() {
+    this.increment()
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        Counter : { this.state.counter }
+        &lt;button onClick={ this.handleClick }&gt;increment&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React</h2>
+      <p>Le rendu du composant est appelé à <u>chaque</u> fois qu'une de ses propriétés ou son état interne est modifié.</p>
+      <h4>Exemple avec une checkbox</h4>
+      <pre><code class="javascript">class Checkbox extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.handleChange = this.handleChange.bind(this)
+    this.state = { value : true }
+  }
+
+  handleChange() {
+    this.setState({ value : !this.state.value })
+  }
+
+  render() {
+    return (
+      &lt;input
+        type="checkbox"
+        value={ this.state.value }
+        onChange={ this.handleChange }
+      /&gt;
+    )
+  }
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Redux</h2>
+      <p>Plutôt que de travailler avec les états internes, <code>Redux</code> propose de contrôler l'état de l'application
+      à partir d'un <code>store</code> global, auquel souscrivent les composants.</p>
+      <pre><code class="javascript">import React from "react"
+import { connect } from "react-redux"
+import { togglePreference } from "./actions"
+
+const mapStateToProps = state => ({
+  value : this.state.preferenceValue
+})
+
+const mapDispatchToProps = dispatch => ({
+  onChange() { dispatch(togglePreference()) }
+})
+
+export Checkbox = props => (
+  &lt;input
+    type="checkbox"
+    value={ props.value }
+    onChange={ props.onChange }
+  /&gt;
+)
+
+export default connect(mapStateToProps,mapDispatchToProps)(Checkbox)
+</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React router</h2>
+      <h3>Gérer la navigation avec React.</h3>
+      <pre><code class="javascript">import { Router, hashHistory } from "react-router"
+
+const rootRoute = {
+
+  component : "div",
+
+  childRoutes : [ {
+
+    path : "/",
+
+    component : require("./components/Main"),
+
+    childRoutes : [
+      require("./routes/catalog"),
+      require("./routes/mockup"),
+      require("./routes/notfound")
+    ]
+
+  } ]
+}
+
+ReactDOM.render(
+  &lt;Router history={ hashHistory } routes={ rootRoute } /&gt;,
+  document.getElementById("content")
+)</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React router</h2>
+      <h3>Ajouter à la volée des sous-routes</h3>
+      <p>Une route et ses sous-routes peuvent être développées à part. Nous ne sommes pas dans une structure "full monopage". </p>
+      <h4>Fichier routes/catalog/index.js</h4>
+      <pre><code class="javascript">module.exports = {
+
+  path : "mockup",
+
+  component : require("./components/Main"),
+
+  childRoutes : [
+    require("./routes/html"),
+    require("./routes/svg"),
+    require("./routes/text")
+  ]
+
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>React router + WebPack</h2>
+      <h3>Grâce à webpack, on peut définir qu'une route fera l'objet d'un "paquet" à part (un fichier js qui ne sera chargé que sur demande).</h3>
+      <h4>Fichier routes/mockup/routes/svg/index.js</h4>
+      <pre><code class="javascript">module.exports = {
+
+  path : "svg",
+
+  getComponent(location, callback) {
+
+    require.ensure( [], require => {
+
+      const Component = require("./components/Main")
+
+      callback(null, Component)
+
+    })
+
+  }
+}
+</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Gérer le style</h2>
+      <p><code>React</code> préconise par défaut le style en ligne, à l'aide d'un objet javascript</p>
+      <pre><code class="javasript">const style = {
+  fontSize:20,
+  width:50,
+  backgroundColor:"pink",
+  padding:20
+}
+
+const Component = ({ children }) => (
+  &lt;div style={ style }&gt;{ children }&lt;/div&gt;
+)</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Modules CSS</h2>
+      <p>Mais on peut faire mieux grâce aux <a href="https://github.com/css-modules/css-modules">modules CSS</a>.</p>
+      <h4>fichier classNames.css</h4>
+      <pre><code class="css">.div {
+  font-size:20px;
+  width:50px;
+  background-color:pink;
+  padding:20px;
+}</code></pre>
+      <h4>fichier Component.js</h4>
+      <pre><code class="javasript">import classNames from "./classNames.css"
+
+const Component = ({ children }) => (
+  &lt;div className={ classNames.div }&gt;{ children }&lt;/div&gt;
+)</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Modules CSS</h2>
+      <h3>Avantages</h3>
+      <ul>
+        <li class="slide">Pas de portée globale du fichier css (les noms de classes sont transformés pour devenir uniques)</li>
+        <li class="slide">Le style est géré dans un fichier à part, et accessible à un non développeur</li>
+        <li class="slide">Autopréfixé et dernières nouveautés CSS grâce au couplage avec <a href="http://postcss.org">PostCSS</a></li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <p>A la racine, nous avons les répertoires suivants :</p>
+      <ul>
+        <li class="slide"><u>components</u> : composants de la page racine et/ou composants commun. On y trouve un composant Main qui sera le composant principal affiché en premier lieu</li>
+        <li class="slide"><u>routes</u> : routes principales et sous-routes</li>
+        <li class="slide"><u>styles</u> : fichiers de style (css, less, sass) liés au thème général et non aux composants</li>
+        <li class="slide"><u>images</u> : fichiers images</li>
+        <li class="slide"><u>store</u> : définition du store <code>redux</code> et des middlewares</li>
+        <li class="slide"><u>index.js</u> : point d'entrée de l'application</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <h3>Répertoire routes</h3>
+      <p>Il contient les routes principales et les sous-routes. Pour chaque sous-route, on retrouve l'arborescence suivante :</p>
+      <ul>
+        <li class="slide"><u>index.js</u> : description et point d'entrée de la route. C'est à ce niveau par exemple qu'on décidera si la route nécessite un paquet js à part ou non.</li>
+        <li class="slide"><u>components</u> : composants liés à cette route</li>
+        <li class="slide"><u>routes</u> : sous-routes qui reprennent le même schéma</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <h3>Redux</h3>
+      <p>Si la route fait appel à redux, les répertoires supplémentaires seront présents : </p>
+      <ul>
+        <li class="slide"><u>actions</u> : définition des actions sur le store et de leur nom.</li>
+        <li class="slide"><u>reducers</u> : reducers pour les actions sur le store</li>
+        <li class="slide"><u>mocker</u> (optionnel) : permet la simulation d'appels serveurs</li>
+      </ul>
+      <p>Le répertoire <code>containers</code> n'est pas mentionné, il semble plus pratique de définir un container directement dans le fichier du composant, le composant connecté étant l'export par défaut et le composant simple accessible par un import nommé (ainsi on peut tester les deux séparément).</p>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <h3>Mocker</h3>
+      <p>Simulateur ultra-simple d'appels serveur</p>
+      <pre><code class="javascript">import Mocker from "lib/mocker"
+
+const mocker = new Mocker()
+mocker.requestDelay = 1000
+
+const persons = [
+  { id : "1", firstName : "Yannick" },
+  { id : "2", firstName : "Diane" },
+  { id : "3", firstName : "Johan" }
+]
+
+mocker.get("/bcu/persons", () => persons)
+
+mocker.get("/bcu/persons/:id", request => {
+  const id = request.params.id
+  const person = persons.find(item => item.id === id)
+
+  if (person) return mocker.makeResponse(person)
+  else return mocker.makeResponse("Unknown person",400)
+})</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <h3>Mocker</h3>
+      <p>Dans la définition de la route, on ajoutera</p>
+      <pre><code class="javascript">import mocker from "./mocker"
+
+module.exports = {
+
+  path : "maroute",
+
+  component : Main,
+
+  onEnter : () => mocker.enable(),
+
+  onLeave : () => mocker.disable()
+}</code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Architecture</h2>
+      <h3>Fetch</h3>
+      <p><code>fetch</code> est le remplaçant standard de <code>XMLHttpRequest</code>. C'est l'unique API à utiliser pour effectuer des requêtes HTTP (pas de <code>$.ajax</code> ou équivalent).
+      Par un petit bout de code surchargant fetch, le json est directement converti en objet js, les statuts http sont gérés ainsi que le jeton d'identification.</p>
+      <pre><code class="javascript">import fetchJSON from "lib/fetch"
+
+fetchJSON("http://metronome/public/api/products/42312")
+.then(data => /*faire qq chose avec data*/ data)
+.catch(e => console.error(e))</code></pre>
+<p><code>fetch</code> est basé sur les promesses, comme <u>tout</u> code asynchrone se doit de l'être (pas de <code>callback</code>).</p>
+    </section>
+
+    <section class="slide">
+      <h2>Plop</h2>
+      <p><code>Plop</code> est un micro-générateur qui, dans notre cas, facilite l'écriture de nouvelles routes et composants.</p>
+      <p>Les appels sont encapsulés dans des commandes <code>NPM</code>.
+      <pre><code class="shell">npm run generate</code></pre>
+      <img src="img/plop.png" alt="plop example"/>
+    </section>
+
 <!--
     <section class="slide">
       <h2>Fonctionnalités ES6 importantes</h2>
