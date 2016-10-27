@@ -306,6 +306,40 @@ const (props) => &lt;div className="toto" {...props}/&gt;</code></pre>
     </section>
 
     <section class="slide">
+      <h2>React</h2>
+      <h3>Adapter un plugin jQuery</h3>
+      <pre><code class="javascript">import React, { Component, PropTypes } from "react"
+import $ from "jquery"
+import "jquery-knob"
+
+export default class Dial extends Component {
+
+  componentDidMount() {
+    $(this.input).dial( {...this.props} )
+  }
+
+  componentWillUnmount() {
+    $(this.input).dial("destroy")
+  }
+
+  componentDidUpdate() {
+    $(this.input).trigger("configure", {...this.props} )
+  }
+
+  render() {
+    return (
+      &lt;input
+        type="text"
+        defaultValue={ this.props.value || 0 }
+        className="dial"
+        ref={ input => this.input = input }
+      /&gt;
+    )
+  }
+}</code></pre>
+    </section>
+
+    <section class="slide">
       <h2>Redux</h2>
       <p>Plutôt que de travailler avec les états internes, <code>Redux</code> propose de contrôler l'état de l'application
       à partir d'un <code>store</code> global, auquel souscrivent les composants.</p>
@@ -331,6 +365,27 @@ export Checkbox = props => (
 
 export default connect(mapStateToProps,mapDispatchToProps)(Checkbox)
 </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Immutable</h2>
+      <p><code>Redux</code> étant basé sur la notion d'objets immutables pour représenter l'état de l'application,
+      la bibliothèque <code>Immutable.js</code> facilite les manipulations pour les structures complexes.
+      </p>
+      <pre><code class="javascript">import Immutable from "immutable"
+
+const initialState = {
+  id : null,
+  fetch : {
+    pending : false,
+    ok : null,
+    message : null
+  }
+}
+
+const immutableState = Immutable.fromJS(initialState)
+
+const newState = immutableState.set("id", 3)</code></pre>
     </section>
 
     <section class="slide">
@@ -443,9 +498,9 @@ const Component = ({ children }) => (
       <h2>Modules CSS</h2>
       <h3>Avantages</h3>
       <ul>
-        <li class="slide">Pas de portée globale du fichier css (les noms de classes sont transformés pour devenir uniques)</li>
-        <li class="slide">Le style est géré dans un fichier à part, et accessible à un non développeur</li>
-        <li class="slide">Autopréfixé et dernières nouveautés CSS grâce au couplage avec <a href="http://postcss.org">PostCSS</a></li>
+        <li>Pas de portée globale du fichier css (les noms de classes sont transformés pour devenir uniques)</li>
+        <li>Le style est géré dans un fichier à part, et accessible à un non développeur</li>
+        <li>Autopréfixé et dernières nouveautés CSS grâce au couplage avec <a href="http://postcss.org">PostCSS</a></li>
       </ul>
     </section>
 
@@ -453,12 +508,12 @@ const Component = ({ children }) => (
       <h2>Architecture</h2>
       <p>A la racine, nous avons les répertoires suivants :</p>
       <ul>
-        <li class="slide"><u>components</u> : composants de la page racine et/ou composants commun. On y trouve un composant Main qui sera le composant principal affiché en premier lieu</li>
-        <li class="slide"><u>routes</u> : routes principales et sous-routes</li>
-        <li class="slide"><u>styles</u> : fichiers de style (css, less, sass) liés au thème général et non aux composants</li>
-        <li class="slide"><u>images</u> : fichiers images</li>
-        <li class="slide"><u>store</u> : définition du store <code>redux</code> et des middlewares</li>
-        <li class="slide"><u>index.js</u> : point d'entrée de l'application</li>
+        <li><u>components</u> : composants de la page racine et/ou composants commun. On y trouve un composant Main qui sera le composant principal affiché en premier lieu</li>
+        <li><u>routes</u> : routes principales et sous-routes</li>
+        <li><u>styles</u> : fichiers de style (css, less, sass) liés au thème général et non aux composants</li>
+        <li><u>images</u> : fichiers images</li>
+        <li><u>store</u> : définition du store <code>redux</code> et des middlewares</li>
+        <li><u>index.js</u> : point d'entrée de l'application</li>
       </ul>
     </section>
 
@@ -467,9 +522,9 @@ const Component = ({ children }) => (
       <h3>Répertoire routes</h3>
       <p>Il contient les routes principales et les sous-routes. Pour chaque sous-route, on retrouve l'arborescence suivante :</p>
       <ul>
-        <li class="slide"><u>index.js</u> : description et point d'entrée de la route. C'est à ce niveau par exemple qu'on décidera si la route nécessite un paquet js à part ou non.</li>
-        <li class="slide"><u>components</u> : composants liés à cette route</li>
-        <li class="slide"><u>routes</u> : sous-routes qui reprennent le même schéma</li>
+        <li><u>index.js</u> : description et point d'entrée de la route. C'est à ce niveau par exemple qu'on décidera si la route nécessite un paquet js à part ou non.</li>
+        <li><u>components</u> : composants liés à cette route</li>
+        <li><u>routes</u> : sous-routes qui reprennent le même schéma</li>
       </ul>
     </section>
 
@@ -478,9 +533,9 @@ const Component = ({ children }) => (
       <h3>Redux</h3>
       <p>Si la route fait appel à redux, les répertoires supplémentaires seront présents : </p>
       <ul>
-        <li class="slide"><u>actions</u> : définition des actions sur le store et de leur nom.</li>
-        <li class="slide"><u>reducers</u> : reducers pour les actions sur le store</li>
-        <li class="slide"><u>mocker</u> (optionnel) : permet la simulation d'appels serveurs</li>
+        <li><u>actions</u> : définition des actions sur le store et de leur nom.</li>
+        <li><u>reducers</u> : reducers pour les actions sur le store</li>
+        <li><u>mocker</u> (optionnel) : permet la simulation d'appels serveurs</li>
       </ul>
       <p>Le répertoire <code>containers</code> n'est pas mentionné, il semble plus pratique de définir un container directement dans le fichier du composant, le composant connecté étant l'export par défaut et le composant simple accessible par un import nommé (ainsi on peut tester les deux séparément).</p>
     </section>
